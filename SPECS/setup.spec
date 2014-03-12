@@ -1,15 +1,20 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.71
-Release: 1%{?dist}
+Release: 4%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
 Source0: https://fedorahosted.org/releases/s/e/%{name}/%{name}-%{version}.tar.bz2
 BuildArch: noarch
 BuildRequires: bash tcsh perl
+#require system release for saner dependency order
+Requires: system-release
 Conflicts: filesystem < 3
 Conflicts: initscripts < 4.26, bash <= 2.0.4-21
+
+Patch1: setup-2.8.71-securetty-mainframes.patch
+Patch2: setup-2.8.71-bashrc-shellvar.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -17,6 +22,10 @@ setup files, such as passwd, group, and profile.
 
 %prep
 %setup -q
+
+%patch1 -p1 -b .mainframe
+%patch2 -p1 -b .envvar
+
 ./shadowconvert.sh
 
 %build
@@ -45,6 +54,9 @@ rm -f %{buildroot}/etc/serviceslint
 rm -f %{buildroot}/etc/uidgidlint
 rm -f %{buildroot}/etc/shadowconvert.sh
 rm -f %{buildroot}/etc/setup.spec
+# remove the "originals" of patched files
+rm -f %{buildroot}/etc/securetty.mainframe
+rm -f %{buildroot}/etc/bashrc.envvar
 
 %clean
 rm -rf %{buildroot}
@@ -90,6 +102,16 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Wed Mar 12 2014 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-4
+- require system-release for saner dependency order (#1075578)
+
+* Tue Feb 25 2014 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-3
+- add more securetty required for mainframes (#1067347)
+- set SHELL envvar to /bin/bash in bashrc (#1063552)
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 2.8.71-2
+- Mass rebuild 2013-12-27
+
 * Fri Jun 07 2013 Ondrej Vasik <ovasik@redhat.com> 2.8.71-1
 - fix escape codes for screen (#969429)
 - handle vte terminals in bashrc (#924275)
