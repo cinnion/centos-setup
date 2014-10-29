@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.71
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
@@ -15,6 +15,8 @@ Conflicts: initscripts < 4.26, bash <= 2.0.4-21
 
 Patch1: setup-2.8.71-securetty-mainframes.patch
 Patch2: setup-2.8.71-bashrc-shellvar.patch
+Patch3: setup-2.8.71-uidgidchanges.patch
+Patch4: setup-2.8.71-filesystems.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -25,6 +27,8 @@ setup files, such as passwd, group, and profile.
 
 %patch1 -p1 -b .mainframe
 %patch2 -p1 -b .envvar
+%patch3 -p1
+%patch4 -p1
 
 ./shadowconvert.sh
 
@@ -57,6 +61,7 @@ rm -f %{buildroot}/etc/setup.spec
 # remove the "originals" of patched files
 rm -f %{buildroot}/etc/securetty.mainframe
 rm -f %{buildroot}/etc/bashrc.envvar
+rm -f %{buildroot}/etc/*.orig
 
 %clean
 rm -rf %{buildroot}
@@ -102,6 +107,11 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Fri Aug 15 2014 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-5
+- reserve uidgid pair 142:142 for activemq (#1086923)
+- add xfs to /etc/filesystems, fallback to /proc/filesystems
+  (#1123832)
+
 * Wed Mar 12 2014 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-4
 - require system-release for saner dependency order (#1075578)
 
