@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.71
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
@@ -107,6 +107,14 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Fri May 22 2015 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-6
+- change reservation of 185:185 to jboss user (#1192413)
+- reserve uidgid pair 167:167 for ceph (#1221043)
+- reserve uidgid for systemd-network(192:192) (#1213820)
+- reserve uidgid for systemd-resolve(193:193) (#1213820)
+- mention systemd-jounal-gateway can be dynamic (#1213820) 
+
+
 * Fri Aug 15 2014 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-5
 - reserve uidgid pair 142:142 for activemq (#1086923)
 - add xfs to /etc/filesystems, fallback to /proc/filesystems
