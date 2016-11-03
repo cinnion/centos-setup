@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.71
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
@@ -17,6 +17,7 @@ Patch1: setup-2.8.71-securetty-mainframes.patch
 Patch2: setup-2.8.71-bashrc-shellvar.patch
 Patch3: setup-2.8.71-uidgidchanges.patch
 Patch4: setup-2.8.71-filesystems.patch
+Patch5: setup-2.8.71-fullpath.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -29,6 +30,7 @@ setup files, such as passwd, group, and profile.
 %patch2 -p1 -b .envvar
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 ./shadowconvert.sh
 
@@ -51,6 +53,8 @@ chmod 0644 %{buildroot}/etc/environment
 chmod 0400 %{buildroot}/etc/{shadow,gshadow}
 chmod 0644 %{buildroot}/var/log/lastlog
 touch %{buildroot}/etc/fstab
+touch %{buildroot}/etc/subuid
+touch %{buildroot}/etc/subgid
 
 # remove unpackaged files from the buildroot
 rm -f %{buildroot}/etc/Makefile
@@ -83,6 +87,8 @@ end
 %verify(not md5 size mtime) %config(noreplace) /etc/group
 %verify(not md5 size mtime) %attr(0000,root,root) %config(noreplace,missingok) /etc/shadow
 %verify(not md5 size mtime) %attr(0000,root,root) %config(noreplace,missingok) /etc/gshadow
+%verify(not md5 size mtime) %config(noreplace) /etc/subuid
+%verify(not md5 size mtime) %config(noreplace) /etc/subgid
 %config(noreplace) /etc/services
 %verify(not md5 size mtime) %config(noreplace) /etc/exports
 %config(noreplace) /etc/aliases
@@ -107,6 +113,11 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Wed May 03 2016 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-7
+- add basic empty subuid/subgid files for docker (#1311278)
+- specify full path to utilities in /etc/profile and /etc/bashrc
+  (#1331871)
+
 * Fri May 22 2015 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-6
 - change reservation of 185:185 to jboss user (#1192413)
 - reserve uidgid pair 167:167 for ceph (#1221043)
