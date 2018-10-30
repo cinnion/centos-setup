@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.71
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
@@ -20,6 +20,8 @@ Patch4: setup-2.8.71-filesystems.patch
 Patch5: setup-2.8.71-fullpath.patch
 Patch6: setup-2.8.71-tapeid.patch
 Patch7: setup-2.8.71-shlocal.patch
+Patch8: setup-2.8.71-protocolscrudp.patch
+Patch9: setup-2.8.71-shellsnologin.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -35,6 +37,8 @@ setup files, such as passwd, group, and profile.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 ./shadowconvert.sh
 
@@ -123,6 +127,11 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Thu Jun 21 2018 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-10
+- fix crudp name in /etc/protocols (#1566469)
+- do not list /sbin/nologin and /usr/sbin/nologin in /etc/shells
+  (#1571104)
+
 * Wed Nov 22 2017 Ondrej Vasik <ovasik@redhat.com> - 2.8.71-9
 - change the URL of the upstream (#1502427)
 
