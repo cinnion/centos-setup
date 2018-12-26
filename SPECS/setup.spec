@@ -22,6 +22,7 @@ Patch6: setup-2.8.71-tapeid.patch
 Patch7: setup-2.8.71-shlocal.patch
 Patch8: setup-2.8.71-protocolscrudp.patch
 Patch9: setup-2.8.71-shellsnologin.patch
+Patch99: setup-2.8.71-polkitd-sssd.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -39,6 +40,7 @@ setup files, such as passwd, group, and profile.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch99 -p1 -b .ka8zrt
 
 ./shadowconvert.sh
 
